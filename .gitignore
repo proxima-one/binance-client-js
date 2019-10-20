@@ -10,3 +10,4 @@ bench/
 .DS_Store
 .npmignore
 bench/.DS_Store
+browser/
