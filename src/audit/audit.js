@@ -12,8 +12,7 @@ function make_audit(audit_base_uri) {
 //list push
 async function binance_audit(audit_base_uri, given_value) {
   let {value, proof, type} = parseQuery(given_value)
-  let audit_value = await requestAuditValue(audit_base_uri, value, type) //(then)
-  //if audit value is nil should throw
+  let audit_value = await requestAuditValue(audit_base_uri, value, type)
   let expected_value = transformAudit(audit_value, value, type)
   let audit_result = auditCorrectness(expected_value, value)
   return audit_result

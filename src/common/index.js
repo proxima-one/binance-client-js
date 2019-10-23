@@ -160,32 +160,37 @@ const MARKET_TICKER = gql`
 const MARKET_DEPTH = gql`
   query marketDepth($symbol_pair: String, $prove: Boolean) {
     marketDepth(symbol_pair: $symbol_pair, prove: $prove) {
-    market_depth {
-      symbol_pair
-      bids
-      asks
+  market_depth {
+		bids {
+      price
+      qty
     }
-    proof {
-      root
-      proof
+    asks {
+      price
+      qty
     }
-    }
+  }
+  proof {
+    root
+    proof
+}
+}
   }
 `;
 
 const MARKET_CANDLESTICKS = gql`
-  query marketCandleSticks($symbol: String, $startTime: String, $endTime: String, $interval: CandleStickInterval, $limit: Int, $prove: Boolean) {
+  query marketCandleSticks($symbol: String, $startTime: String, $endTime: String, $interval: String, $limit: Int, $prove: Boolean) {
     marketCandleSticks(symbol: $symbol, startTime: $startTime, endTime: $endTime, interval: $interval, limit: $limit, prove: $prove) {
       market_candlesticks {
-        closing_price
-          closing_time
-          highest_price
-          lowest_price
-          String_of_trades
-          opening_price
-          opening_time
-          quote_asset_volume
-          volume
+        close
+        closingTime
+        high
+        low
+        numberOfTrades
+        open
+        openTime
+        quoteAssetVolume
+        volume
       }
       proof {
         root
@@ -219,20 +224,16 @@ const ACCOUNT = gql`
 `;
 
 const TRADES = gql`
-  query trades($address: String, $symbol: String, $quoteAssetSymbol: String, $blockHeight: String, $startTime: String, $endTime: String, $buyerOrderId: String, $sellerOrderId: String, $orderSide: OrderSide, $limit: Int, $offset: Int, $prove: Boolean) {
-    trades(address: $address, symbol: $symbol, quoteAssetSymbol: $quoteAssetSymbol, blockHeight: $blockHeight, startTime: $startTime, endTime: $endTime, buyerOrderId: $buyerOrderId, sellerOrderId: $sellerOrderId, orderSide: $orderSide, limit: $limit, offset: $prove, prove: $prove){
-    trade {
-          baseAsset
+  query trades($address: String, $symbol: String, $quoteAssetSymbol: String, $blockHeight: String, $startTime: String, $endTime: String, $buyerOrderId: String, $sellerOrderId: String, $orderSide: Int, $limit: Int, $offset: Int, $prove: Boolean) {
+    trades(address: $address, symbol: $symbol, quoteAssetSymbol: $quoteAssetSymbol, blockHeight: $blockHeight, startTime: $startTime, endTime: $endTime, buyerOrderId: $buyerOrderId, sellerOrderId: $sellerOrderId, orderSide: $orderSide, limit: $limit, offset: $offset, prove: $prove)
+    {
+      trade {
+        baseAsset
         blockHeight
-        buyFee
-        buyerId
-        buyerOrderId
-        buySingleFee
         price
         quantity
         quoteAsset
         sellFee
-        sellerId
         sellerOrderId
         sellSingleFee
         symbol
@@ -245,38 +246,7 @@ const TRADES = gql`
           proof
         }
       }
-  }
-`;
-
-const TRADE = gql`
-query trade($tradeId: String, $prove: Boolean) {
-  trade(tradeId: $tradeId, prove: $prove) {
-trade {
-      baseAsset
-      blockHeight
-      buyFee
-      buyerId
-      buyerOrderId
-      buySingleFee
-      price
-      quantity
-      quoteAsset
-      sellFee
-      sellerId
-      sellerOrderId
-      sellSingleFee
-      symbol
-      tickType
-      time
-      tradeId
-    }
-    proof {
-      root
-      proof
-    }
-}
-  }
-`;
+  }`;
 
 const ATOMIC_SWAPS = gql`
 query atomicSwaps($fromAddress: String, $toAddress: String, $startTime: String, $endTime: String, $limit: Int, $offset: Int, $prove: Boolean) {
@@ -311,7 +281,7 @@ const ATOMIC_SWAP = gql`
   query atomicSwap($swapId: String, $prove: Boolean) {
   atomicSwap(swapId: $swapId, prove: $prove) {
   atomic_swap {
-    closedTime
+  closedTime
   createdTime
   crossChain
   expectedIncome
@@ -337,9 +307,9 @@ const ATOMIC_SWAP = gql`
 `;
 
 const ORDERS = gql`
-query orders($address: String, $symbol: String, $start: String, $end: String, $orderSide: OrderSide, $open: Boolean, $status: OrderStatus, $total: Int, $limit: Int, $offset: Int, $prove: Boolean) {
+query orders($address: String, $symbol: String, $start: String, $end: String, $orderSide: Int, $open: Boolean, $status: String, $total: Int, $limit: Int, $offset: Int, $prove: Boolean) {
   orders(address: $address, symbol: $symbol, start: $start, end: $end, orderSide: $orderSide, open: $open, status: $status, total: $total, limit: $limit, offset: $offset, prove: $prove){
-  order {
+  order{
   cumulateQuantity
   fee
   lastExecutedPrice
@@ -397,16 +367,14 @@ query order($orderId: String, $prove: Boolean) {
 `;
 
 const TRANSACTIONS = gql`
-  query transactions($address: String, $txType: TxType, $txAsset: String, $txSide: TxSide, $blockHeight: String, $startTime: String, $endTime: String, $limit: Int, $offset: Int, $prove: Boolean){
-    transactions(address: $address, txType: $txType, txAsset: $txAsset, txSide: $txSide, blockHeight: $blockHeight, startTime: $startTime, endTime: $endTime, limit: $limit, offset: $offset, prove: $prove) {
+  query transactions($address: String, $txType: String, $txAsset: String, $txSide: Int, $blockHeight: String, $startTime: String, $endTime: String, $limit: Int, $offset: Int, $prove: Boolean){
+    transactions(address: $address, txType: $txType, txAsset: $txAsset, txSide: $txSide, blockHeight: $blockHeight, startTime: $startTime, endTime: $endTime, limit: $limit, offset: $offset, prove: $prove)
+    {
       transaction {
         blockHeight
         code
         data
         fromAddr
-        memo
-        orderId
-        proposalId
         sequence
         source
         swapId
@@ -457,43 +425,26 @@ const TRANSACTION = gql`
   }
 `;
 
-// const QUERY_MAP = {
-// "fees": FEES,
-// "tokens": TOKENS,
-// "block_stats": BLOCK_STATS,
-// "markets": MARKETS,
-// "validators": VALIDATORS,
-// "marketDepth": MARKET_DEPTH,
-// "market_tickers": MARKET_TICKERS,
-// "market_ticker": MARKET_TICKER,
-// "market_candlesticks":  MARKET_CANDLESTICKS,
-// "account": ACCOUNT,
-// "transaction": TRANSACTION,
-// "transactions": TRANSACTIONS,
-// "order": ORDER,
-// "trade": TRADE,
-// "atomic_swap": ATOMIC_SWAP
-// }
+
 
 const QUERIES = {
-  TRANSACTION,
+  //TRANSACTION,
   //TRANSACTIONS,
   //ORDERS,
-  ORDER,
-  MARKET_TICKER,
-  MARKET_TICKERS,
-  // ATOMIC_SWAP,
-  // ATOMIC_SWAPS,
-  ACCOUNT,
-  MARKETS,
-  TOKENS,
-  TRADE,
-  // TRADES,
-  VALIDATORS,
-  BLOCK_STATS,
-  MARKET_DEPTH,
+  //ORDER,
+  //MARKET_TICKER,
+  //MARKET_TICKERS,
+  //ATOMIC_SWAP,
+  //ATOMIC_SWAPS,
+  //ACCOUNT,
+  //MARKETS,
+  //TOKENS,
+//  TRADES,
+//  VALIDATORS,
+//  BLOCK_STATS,
+  //MARKET_DEPTH,
   MARKET_CANDLESTICKS,
-  FEES
+  //FEES
 }
 
 

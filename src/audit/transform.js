@@ -7,13 +7,13 @@ const TRANSFORM_AUDIT = {
   // "block_stats": blockStats_translate_res,
   // "markets": markets_translate_res,
   // "validators":validators_translate_res,
-  // "market_depth":marketDepth_translate_res,
+  //"market_depth":marketDepth_translate_res,
   // "market_tickers":marketTickers_translate_res,
-  // "market_candlesticks":  marketCandlesticks_translate_res,
+  //"market_candlesticks":  marketCandlesticks_translate_res,
   // "account": account_translate_res,
-  // "transaction": transaction_translate_res,
-  // "order": order_translate_res,
-  // "trade": trade_translate_res,
+  //"transactions": transactions_translate_res,
+   //"orders": order_translate_res,
+   //"trades": trade_translate_res,
   // "atomic_swap": atomicSwap_translate_res
 }
 

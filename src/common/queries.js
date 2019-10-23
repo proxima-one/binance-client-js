@@ -7,17 +7,18 @@ const BINANCE_TYPES = [
   "token",
   "block_stats",
   "markets",
-  "market",
   "validators",
   "market_depth",
   "market_tickers",
-  "market",
+  "market_ticker",
   "market_candlesticks",
   "account",
   "transaction",
   "order",
-  "trade",
+  "orders",
+  "trades",
   "atomic_swap",
+  "atomic_swaps",
 ]
 
 const BINANCE_QUERIES = {
@@ -33,13 +34,12 @@ const BINANCE_QUERIES = {
   "marketTicker":"market_ticker",
   "marketTickers":"market_tickers",
   "marketDepth": "market_depth",
-  // marketCandleSticks
-  // trades
-  // trade
-  // atomicSwaps
-  // atomicSwap
+  "marketCandleSticks":"market_candlesticks",
+  "trades": "trade",
+  "atomicSwaps":"atomic_swap",
+  "atomicSwaps":"atomic_swap",
   "validators": "validators",
-  // timelocks
+  "timelocks":"timelocks"
 }
 
 
@@ -52,13 +52,21 @@ function preprocessQuery(query) {
 function parseQuery(query) {
   query = preprocessQuery(query)
   let {value, type} = binanceUnwrapQuery(query)
-  let proof = value["proof"]
-  value = value[type]
-  return {value, proof, type}
-}
+  if (value[type]) {
+    let proof = value["proof"]
+    value = value[type]
+    return {value, proof, type}
+  } else {
+    let rows = []
+    for (var row of value) {
+      rows.push({value: row[type], proof: row["proof"], type: type})
+    }
+    return rows
+  }
+
+  }
 
 function binanceUnwrapQuery(query_value) {
-
   let value;
   for (var key in BINANCE_QUERIES) {
     let query = key
@@ -67,8 +75,8 @@ function binanceUnwrapQuery(query_value) {
       value = query_value[query]
       return {value, type}
     }
-    if (query_value[type]) {
-      value = query_value
+    if (query_value[query]) {
+      value = query_value[query]
       return {value, type}
     }
   }

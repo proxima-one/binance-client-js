@@ -17,10 +17,15 @@
   "scripts": {
     "lint": "eslint lib/ bench/ test/ || exit 0",
     "test": "nyc --reporter=html --reporter=text mocha",
+    "test-react": "jest --config ./jest.config.json",
+    "test:watch": "npm run test-react -- --watch",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "test-file": "bmocha --reporter spec"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.1.3",
+    "@apollo/react-testing": "^3.1.3",
+    "@types/react": "^16.9.9",
     "apollo-boost": "^0.4.4",
     "apollo-client": "^2.6.4",
     "apollo-fetch": "^0.7.0",
@@ -28,6 +33,9 @@
     "apollo-link-http": "^1.5.16",
     "assert": "^2.0.0",
     "babel-eslint": "^10.0.2",
+    "babel-jest": "^24.9.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-jest": "^24.9.0",
     "bcrypto": "^4.0.1",
     "bfile": "~0.2.1",
     "bmutex": "~0.1.6",
@@ -43,11 +51,25 @@
     "performance-now": "^2.1.0",
     "proxima-client": "0.0.2",
     "randombytes": "^2.1.0",
-    "react-apollo": "^3.1.3"
+    "react": "^16.10.2",
+    "react-apollo": "^3.1.3",
+    "react-dom": "^16.10.2",
+    "react-test-renderer": "^16.10.2",
+    "waait": "^1.0.5"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0",
     "bmocha": "^2.1.2",
     "coveralls": "^3.0.4",
+    "jest": "^24.9.0",
     "nyc": "^14.1.1"
   },
   "author": "",
