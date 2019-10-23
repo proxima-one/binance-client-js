@@ -1,65 +1,89 @@
-# Proxima Client JS
+# Binance Client JS
 
 [![CircleCI](https://circleci.com/gh/proxima-one/proxima-client-js.svg?style=svg)](https://circleci.com/gh/proxima-one/proxima-client-js)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/react/blob/master/LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://reactjs.org/docs/how-to-contribute.html#your-first-pull-request)
 
-The Proxima client enables access to Proxima index nodes, and provides the tooling to submit and verify queries to the query nodes
 
-### Functionality
+The Binance client enables access to Proxima index nodes, and provides the tooling to submit and verify queries to the query nodes
 
-- get services
-- fetch nodes for a service
-- deploy a service
-- update a service
-- submit queries to a service
 
-<!--
-The main points for the repository/what it provide
-## Installation
-*
--->
-
+`npm install binance-subgraph-client`
 
 ## Usage
-<!--
-This should include:
-- Tutorial
-- Main Concepts
-- API Guide
-- Support
--->
+
+```javascript
+const Binance = require('binance-subgraph-client')
+const binanceSubgraph = Binance.createBinanceSubgraph(subgraph_uri, binance_chain_api_uri)
+```
 
 
-<!--
-## Examples
-This should include:
-Some examples for people
--->
+### Using as a query client
 
-## Contributing
+```javascript
+const FEES = gql`
+  query fees($prove: Boolean) {
+    fees(prove: $prove) {
+      fees {
+        msg_type
+        fee
+        fee_for
+        multi_transfer_fee
+        lower_limit_as_multi
+      }
+      proof {
+        root
+        proof
+      }
 
-<!--
-This should include:
-- Contributing Guidelines
-- Code of Conduct
-- Good first issues/Pull requests
--->
-Read below to learn how you can take part in improving our project.
+    }
+  }
+`;
 
-### Code of Conduct
+function Fees() {
+  const {loading, error, data} = useQuery(FEES);
+  if (loading) return 'Loading...';
+  if (error) return `Error!`;
+      return (
+        <div>
+        {data.fees.fees.map(fee => (
+          <p>
+            msg_type {fee.msg_type}
+          </p>
+        ))}
+        </div>
+      );
+}
 
-We have adopted a Code of Conduct that we expect project participants to adhere to. Please read [the full text]() so that you can understand what actions will and will not be tolerated.
+<ApolloProvider client={binanceSubgraph.client}>
+  <Fees/>
+</ApolloProvider>,
+);
+```
 
-### Contributing Guide
+### Proving data
 
-Read our [contributing guide]() to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes.
+```javascript
+const {loading, error, data} = useQuery(FEES);
+if (loading) return 'Loading...';
+if (error) return `Error!`;
+{value, proof, type} = Binance.
+binanceSubgraph.audit(value)
+```
 
-### Good First Issues
+### Auditing data
 
-To help you get your feet wet and get you familiar with our contribution process, we have a list of [good first issues]() that contain bugs which have a relatively limited scope. This is a great place to get started.
+```javascript
+const {loading, error, data} = useQuery(FEES);
+if (loading) return 'Loading...';
+if (error) return `Error!`;
+binanceSubgraph.verify(value, proof)
+{value, proof, type} = Binance.
+
+```
+
+
+
 
 ## Licensing
-
 This project is licensed under MIT licensing guidelines.
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/react/blob/master/LICENSE)
